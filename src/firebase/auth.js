@@ -9,3 +9,7 @@ export const signup = async ({ firstName, lastName, email, password }) => {
   })
   return user
 }
+
+export const logout = () => {
+  return firebase.auth().signOut();
+}
