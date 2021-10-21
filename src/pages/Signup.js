@@ -1,30 +1,31 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { signup } from '../firebase/auth';
+import { Link } from 'react-router-dom';
 
 function Signup(props) {
   const { register, handleSubmit, reset } = useForm();
-  const [ isLoading, setLoading ] = useState();
+  const [isLoading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
+    let newUser;
     setLoading(true);
-
     try {
-      const newUser = await signup(data);
+      newUser = await signup(data);
       reset();
-
-      if (newUser) {
-        props.history.push(`/profile/${newUser.uid}`);
-      }
-    } catch (e) {
-      console.error(e, data);
+    } catch (error) {
+      console.log(error);
     }
 
-    setLoading(false);
-  }
+    if (newUser) {
+      props.history.push(`/profile/${newUser.uid}`);
+    } else {
+      setLoading(false);
+    }
+  };
 
-  const formClassName = `ui form ${isLoading ? 'loading' : ''}`
+  const formClassName = `ui form ${isLoading ? 'loading' : ''}`;
+
   return (
     <div className="login-container">
       <div className="ui card login-card">
@@ -45,27 +46,43 @@ function Signup(props) {
               <div className="field">
                 <label>
                   Last Name
-                  <input type="text" name="lastName" placeholder="Last Name" ref={register} />
+                  <input
+                    type="text"
+                    name="lastName"
+                    placeholder="Last Name"
+                    ref={register}
+                  />
                 </label>
               </div>
             </div>
             <div className="field">
               <label>
                 Email
-                <input type="email" name="email" placeholder="Email" ref={register} />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  ref={register}
+                />
               </label>
             </div>
             <div className="field">
               <label>
                 Password
-                <input type="password" name="password" placeholder="Password" ref={register} />
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  ref={register}
+                />
               </label>
             </div>
             <div className="field actions">
-              <button className="ui primary button login" type="submit" >
-                Sign up
+              <button className="ui primary button login" type="submit">
+                Signup
               </button>
-              or <Link to="/login">Login</Link>
+              or
+              <Link to="/login">Log In</Link>
             </div>
           </form>
         </div>

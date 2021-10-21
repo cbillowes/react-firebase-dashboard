@@ -45,8 +45,8 @@ header h2 {
   width: 450px;
 }
 
-.ui.form input[type=text],
-.ui.form input[type=password],
+.ui.form input[type='text'],
+.ui.form input[type='password'],
 .ui.form select {
   margin-top: 10px;
 }
@@ -59,9 +59,7 @@ header h2 {
 }
 
 .actions {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
+  text-align: right;
 }
 
 .actions button {
