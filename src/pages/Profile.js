@@ -22,10 +22,8 @@ const Profile = () => {
   }
 
   return (
-    <div>
-      <p>Name: {user.displayName}</p>
-      <p>Email: {user.email}</p>
-      <p>ID: {user.uid}</p>
+    <div style={{ width: "450px", lineHeight: "1.75rem", wordWrap: "break-word"}}>
+      {JSON.stringify(userDocument)}
     </div>
   )
 }
