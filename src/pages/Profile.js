@@ -3,10 +3,11 @@ import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useSession } from '../firebase/UserProvider';
 import { firestore } from '../firebase/config';
+import { updateUserDocument } from '../firebase/user';
 
 const Profile = () => {
   const { user } = useSession();
-  const { register, setValue } = useForm();
+  const { register, setValue, handleSubmit } = useForm();
   const { id: userId } = useParams();
   const [ userDocument, setUserDocument ] = useState(null);
   const [ isLoading, setLoading ] = useState(false);
@@ -25,7 +26,18 @@ const Profile = () => {
       }
     })
     return unsubscribe;
-  }, [user.uid, setValue]);
+  }, [user.uid, setValue, userId]);
+
+  const onSubmit = async (data) => {
+    try {
+      setLoading(true);
+      await updateUserDocument({ uid: userId, ...data });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   if (!userDocument) {
     return null;
@@ -38,7 +50,7 @@ const Profile = () => {
       className="add-form-container"
       style={{ maxWidth: 960, margin: '50px auto' }}
     >
-      <form className={formClassName}>
+      <form className={formClassName} onSubmit={handleSubmit(onSubmit)}>
         <div className="fields">
           <div className="eight wide field">
             <label>
