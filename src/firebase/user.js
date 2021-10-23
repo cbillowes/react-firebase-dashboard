@@ -1,4 +1,4 @@
-import { firestore } from './config';
+import { firestore, storage } from './config';
 
 export const createUserDocument = async (user) => {
 
@@ -22,4 +22,15 @@ export const createUserDocument = async (user) => {
 export const updateUserDocument = async (user) => {
   const docRef = firestore.doc(`/users/${user.uid}`);
   return docRef.update(user);
+}
+
+export const uploadImage = (userId, file) => {
+  return new Promise((resolve, reject) => {
+    const filePath = `users/${userId}/profile-image`;
+    const fileRef = storage.ref().child(filePath);
+    const uploadTask = fileRef.put(file);
+    uploadTask.on('state_changed', null,
+      (error) => reject(error),
+      () => resolve(uploadTask.snapshot.ref));
+  })
 }
