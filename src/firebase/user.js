@@ -1,8 +1,18 @@
-import { firestore, storage } from './config';
+import {
+  getDocument,
+  createDocument,
+  updateDocument,
+  listenToDocument,
+ } from './firestore';
 
-export const createUserDocument = async (user) => {
+import {
+  uploadFile,
+  getDownloadUrl,
+ } from './storage';
 
-  const docRef = firestore.doc(`/users/${user.uid}`);
+const path = 'users';
+
+export const createUser = async (user) => {
   const userProfile = {
     uid: user.uid,
     email: user.email,
@@ -15,27 +25,31 @@ export const createUserDocument = async (user) => {
     specialty: '',
     ip: '',
   };
-
-  return docRef.set(userProfile);
+  const pathSegments = [user.uid];
+  await createDocument(path, pathSegments, userProfile);
 }
 
-export const updateUserDocument = async (user) => {
-  const docRef = firestore.doc(`/users/${user.uid}`);
-  return docRef.update(user);
+export const listenToUser = (userId, observer) => {
+  const pathSegments = [userId];
+  return listenToDocument(path, pathSegments, (doc) => observer(doc));
 }
 
-export const uploadImage = (userId, file) => {
-  return new Promise((resolve, reject) => {
-    const filePath = `users/${userId}/profile-image`;
-    const fileRef = storage.ref().child(filePath);
-    const uploadTask = fileRef.put(file);
-    uploadTask.on('state_changed', null,
-      (error) => reject(error),
-      () => resolve(uploadTask.snapshot.ref));
-  })
+export const getUser = (userId) => {
+  const pathSegments = [userId];
+  return getDocument(path, pathSegments);
 }
 
-export const getDownloadUrl = (userId) => {
-  const filePath = `users/${userId}/profile-image`
-  return storage.ref().child(filePath).getDownloadURL();
+export const updateUser = async (user) => {
+  const pathSegments = [user.uid];
+  return updateDocument(path, pathSegments, user);
+}
+
+export const uploadProfileImage = (userId, file) => {
+  const path = `users/${userId}/profile-image`;
+  return uploadFile(path, file);
+}
+
+export const getProfileImageUrl = (userId) => {
+  const path = `users/${userId}/profile-image`;
+  return getDownloadUrl(path);
 }

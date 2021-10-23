@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useSession } from '../firebase/UserProvider';
-import { firestore } from '../firebase/config';
-import { updateUserDocument } from '../firebase/user';
+import { updateUser, listenToUser } from '../firebase/user';
 import { ProfileImage } from '../ProfileImage';
 
 const Profile = () => {
@@ -14,25 +13,22 @@ const Profile = () => {
   const [ isLoading, setLoading ] = useState(false);
 
   useEffect(() => {
-    const docRef = firestore.collection('users').doc(userId);
-    const unsubscribe = docRef.onSnapshot((doc) => {
+    listenToUser(userId, (doc) => {
       if (doc.exists) {
-        const documentData = doc.data();
-        setUserDocument(documentData);
-
-        const formData = Object.entries(documentData).map((entry) => ({
+        const data = doc.data();
+        const formData = Object.entries(data).map((entry) => ({
           [entry[0]]: entry[1],
         }));
+        setUserDocument(data);
         setValue(formData);
       }
-    })
-    return unsubscribe;
+    });
   }, [user.uid, setValue, userId]);
 
   const onSubmit = async (data) => {
     try {
       setLoading(true);
-      await updateUserDocument({ uid: userId, ...data });
+      await updateUser({ uid: userId, ...data });
     } catch (error) {
       console.log(error);
     } finally {

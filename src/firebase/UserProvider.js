@@ -1,14 +1,16 @@
 import React, { useEffect, useState, useContext } from 'react';
-import firebase from 'firebase/compat/app';
+import {
+  unsubscribeAuth,
+} from './auth';
 
 export const UserContext = React.createContext();
 
 export const UserProvider = (props) => {
-  const [session, setSession] = useState({user: null, loading: true});
+  const [session, setSession] = useState({ user: null, loading: true  });
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      setSession({loading: false, user})
+    const unsubscribe = unsubscribeAuth((user) => {
+      setSession({ loading: false, user })
     })
 
     return () => unsubscribe();
