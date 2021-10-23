@@ -1,6 +1,6 @@
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 import { createUserDocument } from './user';
-import 'firebase/auth';
+import 'firebase/compat/auth';
 
 export const signup = async ({ firstName, lastName, email, password }) => {
   const resp = await firebase

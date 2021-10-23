@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 
 export const UserContext = React.createContext();
 
