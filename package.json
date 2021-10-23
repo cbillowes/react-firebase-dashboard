@@ -18,7 +18,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy:firestore-rules": "firebase deploy --only firestore:rules"
+    "deploy:firestore-rules": "firebase deploy --only firestore:rules",
+    "deploy:storage-rules": "firebase deploy --only storage:rules"
   },
   "eslintConfig": {
     "extends": "react-app"
