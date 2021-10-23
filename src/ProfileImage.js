@@ -1,9 +1,13 @@
-import React, { useRef, useState } from 'react';
-import { uploadImage } from './firebase/user';
+import React, { useRef, useState, useEffect } from 'react';
+import { uploadImage, getDownloadUrl } from './firebase/user';
 
 export const ProfileImage = ({ id }) => {
   const fileInput = useRef(null);
   const [ imageUrl, setImageUrl ] = useState('/profile-placeholder.png');
+
+  useEffect(() => {
+    getDownloadUrl(id).then(url => !!url && setImageUrl(url))
+  }, [id])
 
   const fileChange = async (files) => {
     const ref = await uploadImage(id, files[0]);

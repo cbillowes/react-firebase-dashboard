@@ -34,3 +34,8 @@ export const uploadImage = (userId, file) => {
       () => resolve(uploadTask.snapshot.ref));
   })
 }
+
+export const getDownloadUrl = (userId) => {
+  const filePath = `users/${userId}/profile-image`
+  return storage.ref().child(filePath).getDownloadURL();
+}
