@@ -9,6 +9,7 @@ const Profile = () => {
   const { register, setValue } = useForm();
   const { id: userId } = useParams();
   const [ userDocument, setUserDocument ] = useState(null);
+  const [ isLoading, setLoading ] = useState(false);
 
   useEffect(() => {
     const docRef = firestore.collection('users').doc(userId);
@@ -30,12 +31,14 @@ const Profile = () => {
     return null;
   }
 
+  const formClassName = `ui big form ${isLoading ? 'loading' : ''}`
+
   return (
     <div
       className="add-form-container"
       style={{ maxWidth: 960, margin: '50px auto' }}
     >
-      <form className="ui big form">
+      <form className={formClassName}>
         <div className="fields">
           <div className="eight wide field">
             <label>
