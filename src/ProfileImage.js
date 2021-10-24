@@ -5,28 +5,26 @@ export const ProfileImage = ({ id }) => {
   const placeholder = '/profile-placeholder.png';
   const fileInput = useRef(null);
   const [ imageUrl, setImageUrl ] = useState(placeholder);
-  const [ isLoading, setLoading ] = useState(false);
+  const [ uploadProgress, setUploadProgress ] = useState(0);
 
   useEffect(() => {
     getProfileImageUrl(id)
       .then((url) => setImageUrl(url));
   }, [id])
 
-  const loading = (progress) => {
-    setLoading(progress < 100);
+  const progressIndication = (progress) => {
+    setUploadProgress(progress);
   }
 
   const fileChange = (files) => {
     const file = files[0];
-    uploadProfileImage(id, file, loading)
+    uploadProfileImage(id, file, progressIndication)
       .then((url) => setImageUrl(url))
       .catch(() => setImageUrl(placeholder));
   }
 
-  const divClassName = `ui form four wide column profile-image ${isLoading ? 'loading' : ''}`
-
   return (
-    <div className={divClassName}>
+    <div className="ui form four wide column profile-image">
       <img
         className="ui image"
         src={imageUrl}
@@ -39,6 +37,7 @@ export const ProfileImage = ({ id }) => {
         ref={fileInput}
         onChange={(e) => fileChange(e.target.files)}
       />
+      <progress style={{ width: "100%" }} value={uploadProgress} maxValue="100" />
       <button
         className="ui grey button upload-button"
         onClick={() => fileInput.current.click()}
