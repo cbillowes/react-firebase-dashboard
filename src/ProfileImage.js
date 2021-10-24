@@ -5,21 +5,28 @@ export const ProfileImage = ({ id }) => {
   const placeholder = '/profile-placeholder.png';
   const fileInput = useRef(null);
   const [ imageUrl, setImageUrl ] = useState(placeholder);
+  const [ isLoading, setLoading ] = useState(false);
 
   useEffect(() => {
     getProfileImageUrl(id)
       .then((url) => setImageUrl(url));
   }, [id])
 
+  const loading = (progress) => {
+    setLoading(progress < 100);
+  }
+
   const fileChange = (files) => {
     const file = files[0];
-    uploadProfileImage(id, file)
+    uploadProfileImage(id, file, loading)
       .then((url) => setImageUrl(url))
       .catch(() => setImageUrl(placeholder));
   }
 
+  const divClassName = `ui form four wide column profile-image ${isLoading ? 'loading' : ''}`
+
   return (
-    <div className="four wide column profile-image">
+    <div className={divClassName}>
       <img
         className="ui image"
         src={imageUrl}

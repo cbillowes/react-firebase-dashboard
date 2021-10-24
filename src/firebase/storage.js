@@ -2,22 +2,27 @@ import { app } from './config';
 import {
   getStorage,
   ref,
-  uploadBytes,
+  uploadBytesResumable,
   getDownloadURL,
 } from 'firebase/storage';
 
-export const uploadFile = (path, file) => {
+export const uploadFile = (path, file, progressObserver) => {
   return new Promise((resolve, reject) => {
     const storage = getStorage(app);
     const fileRef = ref(storage, path);
-    uploadBytes(fileRef, file)
-      .then((snapshot) => {
-        const snapshotRef = snapshot.ref;
-        getDownloadURL(snapshotRef)
-          .then((url) => resolve(url))
-          .catch((error) => reject(error));
-      })
-      .catch((error) => reject(error));
+    const uploadTask = uploadBytesResumable(fileRef, file);
+    // https://firebase.google.com/docs/storage/web/upload-files#monitor_upload_progress
+    uploadTask.on('state_changed',
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        progressObserver(progress);
+      },
+      (error) => reject(error),
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          resolve(downloadURL);
+        });
+      });
   })
 }
 

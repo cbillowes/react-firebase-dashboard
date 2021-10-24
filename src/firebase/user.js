@@ -44,9 +44,9 @@ export const updateUser = async (user) => {
   return updateDocument(path, pathSegments, user);
 }
 
-export const uploadProfileImage = (userId, file) => {
+export const uploadProfileImage = (userId, file, progressObserver) => {
   const path = `users/${userId}/profile-image`;
-  return uploadFile(path, file);
+  return uploadFile(path, file, progressObserver);
 }
 
 export const getProfileImageUrl = (userId) => {
